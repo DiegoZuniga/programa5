@@ -25,9 +25,14 @@ class Jugador{
 void Jugador::initJugador(int pos, int gana, int creationMode){
 	posicion=pos;
 	pos_ganadora=gana;
-	if(pos==1)
+	if(pos==1){
 		archivo_todas+="1.txt";
-	else	archivo_todas+="2.txt";
+		archivo_ganadoras+="1.txt";
+	}
+	else{
+		archivo_todas+="2.txt";
+		archivo_ganadoras+="2.txt";
+	}
 	this->creationMode=creationMode;
 	if(this->creationMode==1)
 		maxMovesPlayer=10;
