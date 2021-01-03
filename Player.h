@@ -12,7 +12,7 @@ class Jugador{
 		int creationMode;
 		int maxMovesWin;
 		int maxMovesPlayer;
-		Jugador(int,int,int);
+		void initJugador(int,int,int);
 		void move();
 		int getPosicion();
 		void setCadenaMovimientos(string);
@@ -22,7 +22,7 @@ class Jugador{
 		void juega(int);
 };
 
-Jugador::Jugador(int pos, int gana, int creationMode){
+void Jugador::initJugador(int pos, int gana, int creationMode){
 	posicion=pos;
 	pos_ganadora=gana;
 	if(pos==1)

@@ -83,8 +83,8 @@ int main(int argc, char *argv[]){
 	op=opcion_creacion();
 	num_jugador=numJugador();
 	if(num_jugador==1)
-		p1=Jugador(1,16,op);
-	else	p1=Jugador(4,13,op);
+		p1.initJugador(1,16,op);
+	else	p1.initJugador(4,13,op);
 	if(op==1){
 		do{
 			fflush(stdin);
@@ -109,8 +109,8 @@ int main(int argc, char *argv[]){
 	cant_jugadores=opcion_CantJugadores();
 	if (cant_jugadores==2){
 		if(num_jugador==1)
-			p2=Jugador(4,13,op);
-		else	p1=Jugador(1,16,op);
+			p2.initJugador(4,13,op);
+		else	p1.initJugador(1,16,op);
 		
 		primero=tira_primero();
 		createArray(&m2,limite);
