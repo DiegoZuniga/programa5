@@ -135,6 +135,5 @@ int main(int argc, char *argv[]){
 		//p1.juega(1);
 	}
 	p1.show_cadena();
-	cout<<"ya jala mamada"<<endl;
 	return 0;
 }
