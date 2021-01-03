@@ -28,11 +28,11 @@ int main(int argc, char const *argv[])
 
     if (player == 1)
     {
-        jugador.initJugador(1, 16, mode);
+        jugador.initJugador(1, 16, mode,cadena);
     }
     else
     {
-        jugador.initJugador(4, 13, mode);
+        jugador.initJugador(4, 13, mode,cadena);
     }
 
     chess.initChess(jugador);
