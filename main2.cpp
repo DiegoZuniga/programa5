@@ -6,12 +6,13 @@
 using namespace std;
 
 bool revision(string);
-void llenarCadena(string*);
+void llenarCadena(string *);
 
 int main(int argc, char const *argv[])
 {
     srand(time(NULL));
-    cout << argc << endl;
+    Jugador jugador;
+    Chess chess;
     int mode = argv[1][0] - 48;
     int player = argv[2][0] - 48;
     int cant = argv[3][0] - 48;
@@ -24,7 +25,23 @@ int main(int argc, char const *argv[])
     {
         llenarCadena(&cadena);
     }
-    cout<<cadena<<endl;
+
+    if (player == 1)
+    {
+        jugador.initJugador(1, 16, mode);
+    }
+    else
+    {
+        jugador.initJugador(4, 13, mode);
+    }
+
+    chess.initChess(jugador);
+
+    chess.crearTablero();
+    chess.abrirArchivos();
+    chess.printPlaysFile();
+    chess.cerrarArchivos();
+
     return 0;
 }
 
@@ -40,11 +57,12 @@ bool revision(string cadena)
     return true;
 }
 
-void llenarCadena(string *cadena){
-    int tam= 1+rand()%20;
-    char len[]={'r','b'};
+void llenarCadena(string *cadena)
+{
+    int tam = 1 + rand() % 20;
+    char len[] = {'r', 'b'};
     for (int i = 0; i < tam; i++)
     {
-        *cadena+=len[rand()%2];
+        *cadena += len[rand() % 2];
     }
 }
