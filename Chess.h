@@ -20,8 +20,8 @@ class Chess
     int totalIterations = 0;
 
 public:
-    Chess(Jugador);
-    Chess(Jugador, Jugador);
+    void initChess(Jugador);
+    void initChess(Jugador, Jugador);
     int getTotalIterations();
     void crearTablero();
     void printPlaysFile();
@@ -33,12 +33,12 @@ public:
     void getMoves(int, int);
 };
 
-Chess::Chess(Jugador p)
+void Chess::initChess(Jugador p)
 {
     jugador = p;
 }
 
-Chess::Chess(Jugador p1, Jugador p2)
+void Chess::initChess(Jugador p1, Jugador p2)
 {
     jugador = p1;
     jugador2 = p2;

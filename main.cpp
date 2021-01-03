@@ -118,7 +118,7 @@ int main(int argc, char *argv[]){
 		str_movimientos=m2;
 		p2.setCadenaMovimientos(str_movimientos);
 		free(m2);
-		tablero=Chess(p1,p2);
+		tablero.initChess(p1,p2);
 		//prubeas y quizas tendremos que borrar algunas cosas
 		/**
 		p2.show_cadena();
@@ -127,7 +127,7 @@ int main(int argc, char *argv[]){
 		else	p2.juega(p1);*/
 	}
 	else {
-		tablero=Chess(p1);
+		tablero.initChess(p1);
 		tablero.crearTablero();
 		tablero.abrirArchivos();
 		tablero.printPlaysFile();
