@@ -23,8 +23,9 @@ public:
 	void juega(int);
 };
 
-void Jugador::initJugador(int pos, int gana, int creationMode,string cadena)
+void Jugador::initJugador(int pos, int gana, int creationMode,string c)
 {
+	cadena=c;
 	posicion = pos;
 	pos_ganadora = gana;
 	if (pos == 1)

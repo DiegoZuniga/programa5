@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
     {
         llenarCadena(&cadena);
     }
-
+    cout<<cadena<<endl;
     if (player == 1)
     {
         jugador.initJugador(1, 16, mode,cadena);

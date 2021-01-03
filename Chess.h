@@ -31,6 +31,7 @@ public:
     list<int> getNextMoves(int);
     void getSquareMoves();
     void getMoves(int, int);
+    bool verificar(list<int>);
 };
 
 void Chess::initChess(Jugador p)
@@ -77,10 +78,15 @@ void Chess::printPlays(int square, int finalState, list<int> nextMoves, int move
 {
     if (square == finalState)
     {
+        
         if (path.size() <= jugador.maxMovesWin)
         {
             path.push_back(square);
             path.pop_front();
+            if (!verificar(path))
+            {
+                return;
+            }
             bool primer = true;
             for (int it : path)
             {
@@ -116,8 +122,13 @@ void Chess::printPlays(int square, int finalState, list<int> nextMoves, int move
     }
     else if (movesCounter == jugador.maxMovesPlayer)
     {
+        if (!verificar(path))
+            {
+                return;
+            }
         bool primer = true;
         path.pop_front();
+        
         for (int it : path)
         {
             if (primer)
@@ -304,4 +315,23 @@ void Chess::getMoves(int row, int col)
     squaresMap.at(squareBoard[row][col].getNumber()).setMoveToW(wmoves);
     squaresMap.at(squareBoard[row][col].getNumber()).setMoveToB(bmoves);
     squaresMap.at(squareBoard[row][col].getNumber()).setTotalMoves(totalmoves);
+}
+
+bool Chess::verificar(list<int> path)
+{
+    int cont = 0;
+    path.pop_back();
+    // if (path.size()!=jugador.cadena.length())
+    // {
+    //     return false;
+    // }
+    for (int it : path)
+    {
+        
+        if (squareBoard[(it-1)/4][(it-1)%4].getColor()!=jugador.cadena[cont++])
+        {
+            return false;
+        }
+    }
+    return true;
 }
