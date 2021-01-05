@@ -35,70 +35,83 @@ else:
 	respaldo="all_plays_p2.txt"
 	respaldo2="all_plays_p1.txt"
 
-
-
-f1=open(archivo,"r")
-limite=len(f1.readlines())
-if limite==0:
-	print("no tienes jugadas ganadoras, cambio de archivo de lectura")
-	f1.close()
-	archivo=respaldo
-	f1=open(archivo,"r")
-	limite=len(f1.readlines())
-
-f1.close()
-jugada=""
-num_jugada=randint(1,limite)
-cont=1
-f1=open(archivo,"r")
-for x in f1:
-	if cont==num_jugada:
-		jugada=x
-		break
-	cont=cont+1
-f1.close()
-lista_jugada = list(jugada[:-1].split(" ")) 
-print(lista_jugada)
-
-if cantidad_jugadores=="2":
-	f2=open(archivo2,"r")
-	limite=len(f2.readlines())
-	if limite==0:
-		print("tu oponente no tiene jugadas ganadoras, cambio de archivo de lectura")
-		f2.close()
-		archivo2=respaldo2
-		f2=open(archivo2,"r")
-		limite=len(f2.readlines())
-
-
-	f2.close()
+#lee las lineas del archivo de jugadas, hasta encontrar la generada por randint
+def obtieneJugada(limite,arch):
 	jugada=""
-	num_jugada2=randint(1,limite)
-			#jugadas=f1.readlines()
+	num_jugada=randint(1,limite)
 	cont=1
-	f2=open(archivo2,"r")
-	for x in f2:
-		if cont==num_jugada2:
+	f1=open(arch,"r")
+	for x in f1:
+		if cont==num_jugada:
 			jugada=x
 			break
 		cont=cont+1
-			#print(jugada)
-	f2.close()
-		#print(coords)
-	lista_jugada2 = list(jugada[:-1].split(" ")) 
-	print(lista_jugada2)
+	f1.close()
+	lista = list(jugada[:-1].split(" ")) 
+	print(lista)
+	return lista
 
-	if len(lista_jugada)>=len(lista_jugada2):
-		lista_menor=lista_jugada2
-		#lista_mayor=lista_jugada
-		#print("has perdido")
-	else:
-		lista_menor=lista_jugada
-		#lista_mayor=lista_jugada2
-		#print("Has ganado")
+#el limite es para generar un random, que determine qué jugada se va a reproducir
+def obtieneLimite(arch,res):
+	f1=open(arch,"r")
+	limite=len(f1.readlines())
+	if limite==0:
+		f1.close()
+		arch=res
+		f1=open(arch,"r")
+		limite=len(f1.readlines())
+		print("sin jugadas ganadoras, cambio de archivo de lectura a "+arch)
+	f1.close()
+	#print(limite)
+	return limite,arch 
+
+def obtieneListaMenor(l1,l2):
+	if len(l1)>=len(l2):
+		return l2
+	return l1
+#revisa si las fichas pueden colocarse en una misma posicion
+#puede que sean en el mismo turno o no, depende quien tira primero
+#retorna true si coinciden y cambia la lista del jugador 1, siempre el jugador 1
+#podría cambiar ambas
+def coinciden(cant_min,lista1,limite1,lista2,arch):
+	listaCambiada=lista1
+	bandera=False
+	for i in range(0,cant_min):
+		if i<cant_min-1 and i>0:
+			if lista1[i]==lista2[i] or lista1[i]==lista2[i+1]  or lista1[i]==lista2[i-1]:
+				print("Se coincide en algun punto, cambio de lista de jugadas")
+				limite1,arch=obtieneLimite(arch,respaldo)
+				listaCambiada=obtieneJugada(limite1,arch)
+				bandera=True
+	return listaCambiada,bandera
+
+
+limite1,archivo=obtieneLimite(archivo,respaldo)
+lista_jugada = obtieneJugada(limite1,archivo)
+
+if cantidad_jugadores=="2":
+	limite2,archivo2=obtieneLimite(archivo2,respaldo2)
+	lista_jugada2=obtieneJugada(limite2,archivo2)
+	#esto nomas es para iterar sobre la lista con menor cantidad de movimientos
+	#y no entrar en posiciones que no existen
+	#el juego termina cuando se ejecuta la cantidad mínima de tiradas (alqguien gana o simplemente terminan)
+	lista_menor=obtieneListaMenor(lista_jugada,lista_jugada2)
+	#esta variable es una herramienta que nos ayudara mas tarde
+	minJugadas=len(lista_menor)
+
+	#verifica que no coincida una misma posición en una misma tirada
+	lista_jugada,band=coinciden(minJugadas, lista_jugada, limite1, lista_jugada2, archivo)
+	
+	while band:
+		lista_menor=obtieneListaMenor(lista_jugada,lista_jugada2)
+		minJugadas=len(lista_menor)
+		lista_jugada,band=coinciden(minJugadas, lista_jugada, limite1, lista_jugada2, archivo)
+
+
 	print(tira_primero+" comienza el juego")
 
 pygame.init()
+#activar el while para que no se cierre la pantalla de ejecucion
 #while 1:
 for event in pygame.event.get():
 	if event.type == pygame.QUIT:
@@ -151,8 +164,8 @@ if cantidad_jugadores=="2":
 				if aux>0:
 					pantalla.blit(fondo,(0,0))
 						
-					pantalla.blit(ficha2,coords.get(int(lista_jugada2[aux-1])))
-					pantalla.blit(ficha1, coords.get(int(lista_jugada[aux])))
+					pantalla.blit(ficha2,coords.get(int(lista_jugada2[aux])))
+					pantalla.blit(ficha1, coords.get(int(lista_jugada[aux-1])))
 					pygame.display.flip()
 					pygame.time.wait(1000)
 					
@@ -168,8 +181,8 @@ if cantidad_jugadores=="2":
 				if aux>0:
 					pantalla.blit(fondo,(0,0))
 						
-					pantalla.blit(ficha2,coords.get(int(lista_jugada1[aux-1])))
-					pantalla.blit(ficha1, coords.get(int(lista_jugada2[aux])))
+					pantalla.blit(ficha2,coords.get(int(lista_jugada[aux])))
+					pantalla.blit(ficha1, coords.get(int(lista_jugada2[aux-1])))
 					pygame.display.flip()
 					pygame.time.wait(1000)
 					
