@@ -1,139 +1,72 @@
 #include <stdlib.h>
-#include "Chess.h"
+#include "chess.h"
 #include <iostream>
 #include <time.h>
+
 using namespace std;
 
-int opcion_creacion(){
-	int op;
-	do{
-		cout<<"1. Ingresar la cadena de movimientos"<<endl<<"2. Generar automaticamente"<<endl;
-		cout<<"Ingrese la opcion deseada:\t"<<endl;
-		cin>>op;
-	}while(op!=1 && op!=2);
-	return op;
-}
-int numJugador(){
-	int op;
-	do{
-		cout<<"1. Jugador 1"<<endl<<"2. Jugador 2"<<endl;
-		cout<<"Ingrese la opcion deseada:\t"<<endl;
-		cin>>op;
-	}while(op!=1 && op!=2);
-	return op;
-}
-int opcion_CantJugadores(){
-	int cant_jugadores;
-	do{
-		cout<<"1. 1 jugador"<<endl<<"2. 2 jugadores"<<endl;
-		cout<<"Ingrese la opcion deseada:\t"<<endl;
-		cin>>cant_jugadores;
-	}while(cant_jugadores!=1 && cant_jugadores!=2);
-	return cant_jugadores;
-}
-int tira_primero(){
-	return rand()%2;
-}
-void limite_cadena(int *limite){
-	*limite = 1 + rand()%10;
-}
-void createArray(char **A,int elem){
-    *A=(char *)malloc((elem)*sizeof(char));
-    if(*A==NULL){
-        printf("No hay memoria disponible...\n");
-        exit(0);
-    }
-}
-void llena_array(char *movimientos,int limite){
-	char r_or_b[]={'r','b'};
-	for (int i=0;i<limite;i++)
-		movimientos[i]=r_or_b[rand()%2];
-}
+bool revision(string);
+void llenarCadena(string *, int);
+void completaIntrucciones(int,int, int);
 
-bool valida_cadena(string movimientos){
-	int i;
-	for(i=0;i<movimientos.length();i++)
-		if(movimientos[i]!='r' && movimientos[i]!='b')
-			return false;
+int main(int argc, char const *argv[]){
+    srand(time(NULL));
+    int tam = 1+rand()%10;
+    Jugador jugador, jugador2;
+    int mode = argv[1][0] - 48;
+    int player = argv[2][0] - 48;
+    int cant = argv[3][0] - 48;
+    int tira_primero=1+rand()%2;
+    string cadena,cadena2;
+    char instrucciones[25];
+    FILE *consola;
+    consola=fopen("consola.txt","r");
+        /*ejecutar con ./main modo de creacion(manual o automatico) jugador (1 o 2) cantdadJugadores (1 o 2) en caso de que se requiera, cadena de movimientos*/
+    if (argc == 5 && mode == 1)
+        cadena = argv[4];
+    else    llenarCadena(&cadena, tam);
+    if (player == 1)
+        jugador.initJugador(1, 16, mode, cadena);
+    else    jugador.initJugador(4, 13, mode, cadena);
 
-	return movimientos.length()<=20 ? true : false;
-}
 
-/*
-int main()
-{
     Chess chess;
-
-    chess.crearTablero();
-    chess.abrirArchivos();
-    chess.printPlaysFile(2);
-    chess.cerrarArchivos();
+    chess.initChess(jugador);
+    cout <<"cadena de jugadas del jugador 1: "<< cadena << endl;
+    
+    if(cant == 2){
+        if(mode==1)
+            llenarCadena(&cadena2,cadena.length());
+        else    llenarCadena(&cadena2, tam);
+        if(player==1)
+            jugador2.initJugador(4, 13, mode, cadena2);
+        else    jugador2.initJugador(1, 16, mode, cadena2);
+        cout <<"cadena de jugadas del jugador 2: "<< cadena2 << endl;
+        chess.initChess(jugador2);
+    }
+    completaIntrucciones(cant,player,tira_primero);
+    fgets(instrucciones,25,consola);
+    system(instrucciones);
+    //string.c_str();
+    return 0;
 }
-*/
 
+bool revision(string cadena){
+    for (char c : cadena){
+        if (c != 'b' && c != 'r')
+            return false;
+    }
+    return cadena.length()<=20 ? true : false;
+}
 
-int main(int argc, char *argv[]){
-	srand(time(NULL));
-	int limite,op,cant_jugadores,primero,num_jugador;
-	char *movimientos,*m2;
-	string str_movimientos;
-	Jugador p1,p2;
-	Chess tablero;
-	bool cad_correcta;
-	op=opcion_creacion();
-	num_jugador=numJugador();
-	if(num_jugador==1)
-		p1.initJugador(1,16,op);
-	else	p1.initJugador(4,13,op);
-	if(op==1){
-		do{
-			fflush(stdin);
-			cout<<"Ingresa la cadena de movimientos (solo debe contener r's y b's y contener a lo sumo 20 caracteres)"<<endl;
-			cin>>str_movimientos;
-			cad_correcta=valida_cadena(str_movimientos);
-		}while(!cad_correcta);
-		limite=str_movimientos.length();
-		p1.setCadenaMovimientos(str_movimientos);
-	}
-	else{
-		limite_cadena(&limite);
-		createArray(&movimientos,limite);
-		llena_array(movimientos,limite);
-		str_movimientos=movimientos;
-		p1.setCadenaMovimientos(str_movimientos);
-		free(movimientos);
-	} 
-	//el usuario solo tiene control del jugador 1, por lo tanto las tiradas del segundo, de ahuevo deben ser
-	//generadas automaticamente
-	
-	cant_jugadores=opcion_CantJugadores();
-	if (cant_jugadores==2){
-		if(num_jugador==1)
-			p2.initJugador(4,13,op);
-		else	p2.initJugador(1,16,op);
-		
-		primero=tira_primero();
-		createArray(&m2,limite);
-		llena_array(m2,limite);
-		str_movimientos=m2;
-		p2.setCadenaMovimientos(str_movimientos);
-		free(m2);
-		tablero.initChess(p1,p2);
-		//prubeas y quizas tendremos que borrar algunas cosas
-		/**
-		p2.show_cadena();
-		if(primero==0)
-			p1.juega(p2);
-		else	p2.juega(p1);*/
-	}
-	else {
-		tablero.initChess(p1);
-		tablero.crearTablero();
-		tablero.abrirArchivos();
-		tablero.printPlaysFile();
-		tablero.cerrarArchivos();
-		//p1.juega(1);
-	}
-	p1.show_cadena();
-	return 0;
+void llenarCadena(string *cadena, int tam){
+    char len[] = {'r', 'b'};
+    for (int i = 0; i < tam; i++)
+        *cadena += len[rand() % 2];
+}
+void completaIntrucciones(int cant, int jugador, int tira_primero){
+    FILE *consola;
+    consola=fopen("consola.txt","w");
+    fprintf(consola, "python3 pruebas.py %d %d %d",cant,jugador,tira_primero );
+    fclose(consola);
 }
