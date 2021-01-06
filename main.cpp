@@ -7,7 +7,6 @@ using namespace std;
 
 bool revision(string);
 void llenarCadena(string *, int);
-void completaIntrucciones(int, int, int);
 
 int main(int argc, char const *argv[])
 {
@@ -73,11 +72,4 @@ void llenarCadena(string *cadena, int tam)
     char len[] = {'r', 'b'};
     for (int i = 0; i < tam; i++)
         *cadena += len[rand() % 2];
-}
-void completaIntrucciones(int cant, int jugador, int tira_primero)
-{
-    FILE *consola;
-    consola = fopen("consola.txt", "w");
-    fprintf(consola, "python3 pruebas.py %d %d %d", cant, jugador, tira_primero);
-    fclose(consola);
 }
